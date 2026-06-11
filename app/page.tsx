@@ -1,11 +1,187 @@
-
 "use client";
+
 import { useState } from "react";
-type ScoutResult = { collectedVideos?: any[]; benchmarkSummary?: string; winningPatterns?: string[]; hookPatterns?: string[]; captionPatterns?: string[]; shootingPatterns?: string[]; contentAngles?: string[]; script15?: string; script25?: string; captionScript?: string; thumbnailCopy?: string[]; nextVideoIdeas?: string[]; };
-export default function Home(){
- const [keyword,setKeyword]=useState("주방 투명 시트지"); const [platform,setPlatform]=useState("youtube"); const [target,setTarget]=useState("제휴쇼핑 전환을 노리는 숏폼 시청자"); const [manualUrls,setManualUrls]=useState(""); const [memo,setMemo]=useState(""); const [tone,setTone]=useState("실제 후기 느낌"); const [loading,setLoading]=useState(false); const [result,setResult]=useState<ScoutResult|null>(null); const [tab,setTab]=useState("summary");
- async function analyze(){ setLoading(true); setResult(null); try{ const res=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({keyword,platform,target,manualUrls,memo,tone})}); const data=await res.json(); if(!res.ok){alert(data.error||'분석 중 오류가 났어요.'); return;} setResult(data.result);}catch(e){alert('오류가 났어요. API 키 설정을 확인해주세요.');}finally{setLoading(false);} }
- const tabs=[["summary","벤치마킹"],["videos","수집영상"],["patterns","패턴"],["script15","15초 대본"],["script25","25초 대본"],["caption","자막"],["thumb","썸네일"],["ideas","다음 아이디어"]];
- function text(){ if(!result) return '키워드를 입력하고 분석 시작 버튼을 눌러주세요.'; if(tab==='summary') return result.benchmarkSummary||''; if(tab==='videos') return (result.collectedVideos||[]).map((v:any,i:number)=>`${i+1}. ${v.title||'제목 없음'}\n채널: ${v.channelTitle||'-'}\n조회수: ${v.viewCount||'-'}\n좋아요: ${v.likeCount||'-'}\nURL: ${v.url||'-'}\n`).join('\n'); if(tab==='patterns') return `이기는 영상 공통점\n${(result.winningPatterns||[]).map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\n후킹 패턴\n${(result.hookPatterns||[]).map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\n자막 패턴\n${(result.captionPatterns||[]).map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\n촬영구도 패턴\n${(result.shootingPatterns||[]).map((x,i)=>`${i+1}. ${x}`).join('\n')}\n\n콘텐츠 각도\n${(result.contentAngles||[]).map((x,i)=>`${i+1}. ${x}`).join('\n')}`; if(tab==='script15') return result.script15||''; if(tab==='script25') return result.script25||''; if(tab==='caption') return result.captionScript||''; if(tab==='thumb') return (result.thumbnailCopy||[]).map((x,i)=>`${i+1}. ${x}`).join('\n'); if(tab==='ideas') return (result.nextVideoIdeas||[]).map((x,i)=>`${i+1}. ${x}`).join('\n'); return '';}
- async function copy(){ await navigator.clipboard.writeText(text()); alert('복사됐어요.');}
- return <main className="wrap"><section className="hero"><p className="eyebrow">폼생폼생 전용 · 숏폼 리서치 AI</p><h1>폼생AI Scout</h1><p>키워드 하나로 잘되는 쇼츠를 수집하고, 후킹·자막·촬영구도 패턴을 뽑아 나만의 숏폼 대본으로 바꿉니다.</p><span>Research → Benchmark → Script</span></section><section className="card"><h2>리서치 입력</h2><label>키워드 / 상품명</label><input value={keyword} onChange={e=>setKeyword(e.target.value)} placeholder="예: 무선 전동 스퀴지"/><label>우선 분석 플랫폼</label><select value={platform} onChange={e=>setPlatform(e.target.value)}><option value="youtube">YouTube Shorts 자동 수집</option><option value="manual">수동 URL 중심 분석</option></select><label>목표 시청자</label><input value={target} onChange={e=>setTarget(e.target.value)} placeholder="예: 생활꿀템 좋아하는 20~40대"/><label>틱톡/인스타/쇼츠 URL 수동 입력</label><textarea value={manualUrls} onChange={e=>setManualUrls(e.target.value)} placeholder={'벤치마킹할 URL을 줄바꿈으로 넣으세요\nhttps://www.youtube.com/shorts/...\nhttps://www.instagram.com/reel/...\nhttps://www.tiktok.com/...'}/><label>추가 메모</label><textarea value={memo} onChange={e=>setMemo(e.target.value)} placeholder="예: 광고 느낌 빼고, 실제 써본 것처럼. 첫 2초 후킹 강하게."/><label>생성 톤</label><select value={tone} onChange={e=>setTone(e.target.value)}><option>실제 후기 느낌</option><option>강한 후킹 판매형</option><option>예능형</option><option>깔끔한 정보형</option><option>엄마템 추천형</option></select><button className="mainBtn" onClick={analyze} disabled={loading||!keyword.trim()}>{loading?'숏폼 벤치마킹 중...':'분석 시작'}</button></section><section className="card"><div className="resultTop"><h2>분석 결과</h2><button className="copyBtn" onClick={copy}>현재 탭 복사</button></div><div className="tabs">{tabs.map(([id,name])=><button key={id} onClick={()=>setTab(id)} className={tab===id?'active':''}>{name}</button>)}</div><pre>{text()}</pre></section><section className="card guide"><h2>운영 방식</h2><p>이 앱은 주문/결제/쇼핑몰 기능이 아니라 숏폼 리서치와 벤치마킹을 위한 개인용 AI 도구입니다. 유튜브는 공식 API로 수집하고, 틱톡/인스타는 안전하게 수동 URL 입력 방식으로 시작합니다.</p></section></main> }
+
+type ScriptSet = {
+  title?: string;
+  toneName?: string;
+  hook?: string;
+  script15?: string;
+  script25?: string;
+  captionScript?: string;
+  shotList?: string[];
+  ctaList?: string[];
+};
+
+type Result = {
+  systemStatus?: string;
+  youtubeStatus?: string;
+  collectedVideos?: any[];
+  accountScout?: string;
+  benchmarkReport?: string;
+  winningPatterns?: string[];
+  hookBank?: string[];
+  captionPatterns?: string[];
+  shootingPatterns?: string[];
+  scriptSets?: ScriptSet[];
+  thumbnailCopy?: string[];
+  commentHooks?: string[];
+  nextVideoIdeas?: string[];
+  warning?: string;
+};
+
+export default function Home() {
+  const [keyword, setKeyword] = useState("주방 투명 시트지");
+  const [target, setTarget] = useState("제휴쇼핑 전환을 노리는 숏폼 시청자");
+  const [manualUrls, setManualUrls] = useState("");
+  const [memo, setMemo] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState("report");
+  const [result, setResult] = useState<Result | null>(null);
+
+  async function analyze() {
+    setLoading(true);
+    setResult(null);
+    try {
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ keyword, target, manualUrls, memo })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "분석 중 오류가 났어요.");
+        return;
+      }
+      setResult(data.result);
+    } catch (e) {
+      alert("오류가 났어요. OpenAI 크레딧/API 설정을 확인해주세요.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const tabs = [
+    ["report", "벤치마킹 리포트"],
+    ["status", "상태"],
+    ["videos", "수집영상"],
+    ["accounts", "계정 Scout"],
+    ["patterns", "패턴"],
+    ["scripts", "대본 세트"],
+    ["captions", "자막/컷"],
+    ["thumb", "썸네일"],
+    ["comments", "댓글/CTA"],
+    ["ideas", "다음 아이디어"]
+  ];
+
+  function scriptsText(mode: "scripts" | "captions") {
+    const arr = result?.scriptSets || [];
+    if (!arr.length) return "대본 세트가 없습니다.";
+    return arr.map((s, i) => {
+      if (mode === "captions") {
+        return `==============================
+${i + 1}. ${s.title || s.toneName || "대본 세트"}
+
+[캡컷 자막]
+${s.captionScript || ""}
+
+[촬영 컷 구성]
+${(s.shotList || []).map((x, idx) => `${idx + 1}. ${x}`).join("\n")}
+
+[CTA]
+${(s.ctaList || []).map((x, idx) => `${idx + 1}. ${x}`).join("\n")}`;
+      }
+      return `==============================
+${i + 1}. ${s.title || s.toneName || "대본 세트"}
+
+[후킹]
+${s.hook || ""}
+
+[15초 대본]
+${s.script15 || ""}
+
+[25초 대본]
+${s.script25 || ""}`;
+    }).join("\n\n");
+  }
+
+  function text() {
+    if (!result) return "키워드를 입력하고 분석 시작 버튼을 눌러주세요.";
+
+    if (tab === "status") return `시스템 상태\n${result.systemStatus || "-"}\n\n유튜브 수집 상태\n${result.youtubeStatus || "-"}\n\n주의\n${result.warning || "-"}`;
+    if (tab === "report") return result.benchmarkReport || "";
+    if (tab === "videos") {
+      const videos = result.collectedVideos || [];
+      if (!videos.length) return "수집된 영상이 없습니다.\n\nYOUTUBE_API_KEY가 Vercel 환경변수에 없으면 유튜브 자동 수집이 작동하지 않습니다.";
+      return videos.map((v: any, i: number) =>
+        `${i + 1}. ${v.title || "제목 없음"}\n채널: ${v.channelTitle || "-"}\n조회수: ${v.viewCount?.toLocaleString?.() || v.viewCount || "-"}\n좋아요: ${v.likeCount?.toLocaleString?.() || v.likeCount || "-"}\n댓글: ${v.commentCount?.toLocaleString?.() || v.commentCount || "-"}\nURL: ${v.url || "-"}\n`
+      ).join("\n");
+    }
+    if (tab === "accounts") return result.accountScout || "";
+    if (tab === "patterns") {
+      return `조회수 잘 나오는 공통 패턴\n${(result.winningPatterns || []).map((x, i) => `${i+1}. ${x}`).join("\n")}
+
+후킹 뱅크\n${(result.hookBank || []).map((x, i) => `${i+1}. ${x}`).join("\n")}
+
+자막 패턴\n${(result.captionPatterns || []).map((x, i) => `${i+1}. ${x}`).join("\n")}
+
+촬영구도 패턴\n${(result.shootingPatterns || []).map((x, i) => `${i+1}. ${x}`).join("\n")}`;
+    }
+    if (tab === "scripts") return scriptsText("scripts");
+    if (tab === "captions") return scriptsText("captions");
+    if (tab === "thumb") return (result.thumbnailCopy || []).map((x, i) => `${i+1}. ${x}`).join("\n");
+    if (tab === "comments") return (result.commentHooks || []).map((x, i) => `${i+1}. ${x}`).join("\n");
+    if (tab === "ideas") return (result.nextVideoIdeas || []).map((x, i) => `${i+1}. ${x}`).join("\n");
+    return "";
+  }
+
+  async function copy() {
+    await navigator.clipboard.writeText(text());
+    alert("복사됐어요.");
+  }
+
+  return (
+    <main className="wrap">
+      <section className="hero">
+        <p className="eyebrow">폼생폼생 전용 · 숏폼 벤치마킹 AI</p>
+        <h1>폼생AI Scout Pro</h1>
+        <p>키워드 하나로 쇼츠 데이터를 수집하고, 잘되는 패턴을 분석해서 여러 톤의 대본·자막·촬영컷으로 뽑아냅니다.</p>
+        <span>Research → Benchmark → Script Sets</span>
+      </section>
+
+      <section className="card">
+        <h2>리서치 입력</h2>
+        <label>키워드 / 상품명</label>
+        <input value={keyword} onChange={e => setKeyword(e.target.value)} placeholder="예: 무선 전동 스퀴지" />
+
+        <label>목표 시청자</label>
+        <input value={target} onChange={e => setTarget(e.target.value)} placeholder="예: 생활꿀템 좋아하는 20~40대" />
+
+        <label>틱톡/인스타/쇼츠 URL 수동 입력</label>
+        <textarea value={manualUrls} onChange={e => setManualUrls(e.target.value)} placeholder={"벤치마킹할 URL이나 영상 자막을 줄바꿈으로 넣으세요\nhttps://www.youtube.com/shorts/...\nhttps://www.instagram.com/reel/...\nhttps://www.tiktok.com/...\n\n또는 영상에서 본 대사를 직접 붙여넣어도 됩니다."} />
+
+        <label>추가 메모</label>
+        <textarea value={memo} onChange={e => setMemo(e.target.value)} placeholder="예: 광고 느낌 빼고, 실제 써본 것처럼. 첫 2초 후킹 강하게. 제휴링크 클릭 유도." />
+
+        <button className="mainBtn" onClick={analyze} disabled={loading || !keyword.trim()}>
+          {loading ? "진짜 벤치마킹 분석 중..." : "Pro 분석 시작"}
+        </button>
+      </section>
+
+      <section className="card">
+        <div className="resultTop">
+          <h2>분석 결과</h2>
+          <button className="copyBtn" onClick={copy}>현재 탭 복사</button>
+        </div>
+
+        <div className="tabs">
+          {tabs.map(([id, name]) => (
+            <button key={id} onClick={() => setTab(id)} className={tab === id ? "active" : ""}>{name}</button>
+          ))}
+        </div>
+
+        <pre>{text()}</pre>
+      </section>
+    </main>
+  );
+}
