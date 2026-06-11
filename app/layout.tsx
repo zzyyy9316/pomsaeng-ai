@@ -1,8 +1,8 @@
 import "./style.css";
 
 export const metadata = {
-  title: "폼생AI Scout Pro",
-  description: "숏폼 리서치와 벤치마킹 AI"
+  title: "폼생AI Scout v3",
+  description: "숏폼 벤치마킹 리서치 AI"
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

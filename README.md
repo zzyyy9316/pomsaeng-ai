@@ -1,24 +1,21 @@
-# 폼생AI Scout Pro
+# 폼생AI Scout v3
 
-숏폼 제휴마케팅용 리서치/벤치마킹 AI입니다.
+## 기능
 
-## Pro 업데이트
-
-- 유튜브 수집 상태 표시
-- 수집영상 탭 개선
-- 대본 세트 최소 10개 생성
-- 각 세트별 15초/25초 대본
-- 캡컷용 자막 스크립트
+- YouTube Shorts 자동 수집
+- 조회수 기준 영상 정렬
+- 채널별 Scout 데이터 생성
+- TikTok/Instagram/Shorts URL 또는 자막 수동 입력 분석
+- 벤치마킹 리포트
+- 후킹 50개
+- 대본 세트 12개 이상
+- 캡컷 자막
 - 촬영 컷 구성
-- CTA
-- 후킹 40개
-- 썸네일 30개
-- 다음 영상 아이디어 40개
-- 계정 Scout 리포트 강화
+- 썸네일 40개
+- 댓글 유도 30개
+- 다음 영상 아이디어 50개
 
 ## 환경변수
 
-OPENAI_API_KEY=본인 OpenAI API 키
-YOUTUBE_API_KEY=본인 YouTube Data API 키
-
-YOUTUBE_API_KEY가 없으면 유튜브 자동 수집은 안 되지만, 키워드 기반 분석은 작동합니다.
+OPENAI_API_KEY=OpenAI API 키
+YOUTUBE_API_KEY=YouTube Data API v3 키
