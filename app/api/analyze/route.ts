@@ -82,7 +82,7 @@ async function searchYouTube(keyword: string) {
       videos.push(row);
     }
 
-    const sorted = videos.sort((a, b) => b.viewCount - a.viewCount).slice(0, 50);
+    const sorted = videos.sort((a, b) => b.viewCount - a.viewCount).slice(0, 12);
 
     const byChannel: Record<string, any> = {};
     for (const v of sorted) {
@@ -109,7 +109,7 @@ async function searchYouTube(keyword: string) {
       ...c,
       avgViews: Math.round(c.totalViews / Math.max(c.videoCount, 1)),
       score: Math.round(Math.log10(c.totalViews + 1) * 20 + c.videoCount * 5)
-    })).sort((a: any, b: any) => b.score - a.score).slice(0, 20);
+    })).sort((a: any, b: any) => b.score - a.score).slice(0, 8);
 
     return { status: `유튜브 영상 ${sorted.length}개, 계정 ${channels.length}개 수집 완료`, videos: sorted, channels };
   } catch (e: any) {
