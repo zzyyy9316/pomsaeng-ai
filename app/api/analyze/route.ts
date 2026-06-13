@@ -228,14 +228,7 @@ ${JSON.stringify(manualData.slice(0, 2), null, 2)}
   "systemStatus": "분석 완료",
   "youtubeStatus": "유튜브 수집 상태 요약",
   "warning": "참고 데이터 한계와 주의사항",
-  "buyerPsychology": {
-    "buyingReason": "왜 이 상품을 사는지",
-    "hesitation": "왜 망설이는지",
-    "triggerSituation": "어떤 상황에서 필요해지는지",
-    "prePurchaseConcern": "구매 전 걱정",
-    "conversionEmotion": "구매 버튼을 누르게 되는 감정",
-    "firstPainPoint": "숏폼에서 먼저 건드릴 불편함"
-  },
+ 
   "channelPackage": {
     "youtubeShorts": {
       "titles": ["제목 1", "제목 2", "제목 3"],
