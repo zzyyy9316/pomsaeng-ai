@@ -415,7 +415,7 @@ channelPackage:
 }
 `;
 const controller = new AbortController();
-const timeout = setTimeout(() => controller.abort(), 30000);
+const timeout = setTimeout(() => controller.abort(), 55000);
 
 let completion;
 
@@ -435,7 +435,7 @@ try {
       ],
       response_format: { type: "json_object" },
       temperature: 0.7,
-      max_tokens: 1800
+      max_tokens: 1200
     },
     {
       signal: controller.signal
