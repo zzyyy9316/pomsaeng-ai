@@ -435,7 +435,7 @@ try {
       ],
       response_format: { type: "json_object" },
       temperature: 0.7,
-      max_tokens: 1200
+      max_tokens: 4500
     },
     {
       signal: controller.signal
