@@ -414,16 +414,36 @@ channelPackage:
   "nextVideoIdeas": ["다음에 찍을 영상 아이디어 10개"]
 }
 `;
+const controller = new AbortController();
+const timeout = setTimeout(() => controller.abort(), 30000);
 
-    const completion = await client.chat.completions.create({
-      model: "gpt-4.1-mini",
+let completion;
+
+try {
+  completion = await client.chat.completions.create(
+    {
+      model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "너는 쇼핑 콘텐츠 운영 콘솔 AI다. JSON만 출력한다." },
-        { role: "user", content: prompt }
+        {
+          role: "system",
+          content: "너는 쇼핑 콘텐츠 운영 콘솔 AI다. JSON만 출력한다."
+        },
+        {
+          role: "user",
+          content: prompt
+        }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.85
-    });
+      temperature: 0.85,
+      max_tokens: 2500
+    },
+    {
+      signal: controller.signal
+    }
+  );
+} finally {
+  clearTimeout(timeout);
+}
 
     const result = JSON.parse(completion.choices[0].message.content || "{}");
 
