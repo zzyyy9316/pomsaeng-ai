@@ -49,7 +49,7 @@ async function searchYouTube(keyword: string) {
       }
     }
 
-    const ids = Array.from(idSet).slice(0, 50);
+    const ids = Array.from(idSet).slice(0, 12);
     if (!ids.length) return { status: "유튜브 검색 결과가 없습니다.", videos: [], channels: [] };
 
     const videos: any[] = [];
@@ -133,7 +133,7 @@ async function fetchPageText(url: string) {
       .replace(/<style[\s\S]*?<\/style>/gi, " ")
       .replace(/<[^>]*>/g, " ")
       .replace(/\s+/g, " ")
-      .slice(0, 9000);
+      .slice(0, 1500);
   } catch {
     return "";
   }
@@ -434,8 +434,8 @@ try {
         }
       ],
       response_format: { type: "json_object" },
-      temperature: 0.85,
-      max_tokens: 2500
+      temperature: 0.7,
+      max_tokens: 1800
     },
     {
       signal: controller.signal
@@ -445,7 +445,17 @@ try {
   clearTimeout(timeout);
 }
 
-    const result = JSON.parse(completion.choices[0].message.content || "{}");
+  let result: any = {};
+
+try {
+  result = JSON.parse(
+    completion.choices?.[0]?.message?.content || "{}"
+  );
+} catch {
+  result = {
+    systemStatus: "JSON_PARSE_ERROR"
+  };
+}
 
     result.youtubeStatus = result.youtubeStatus || yt.status;
     result.systemStatus = result.systemStatus || "분석 완료";
