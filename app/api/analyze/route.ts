@@ -229,26 +229,7 @@ ${JSON.stringify(manualData.slice(0, 2), null, 2)}
   "youtubeStatus": "유튜브 수집 상태 요약",
   "warning": "참고 데이터 한계와 주의사항",
  
-  "channelPackage": {
-    "youtubeShorts": {
-      "titles": ["제목 1", "제목 2", "제목 3"],
-      "hooks": ["후킹 1", "후킹 2", "후킹 3"],
-      "scripts": ["쇼츠 대본 1", "쇼츠 대본 2"]
-    },
-    "instagramReels": {
-      "hooks": ["릴스 후킹 1", "릴스 후킹 2", "릴스 후킹 3"],
-      "captions": ["캡션 1", "캡션 2", "캡션 3"],
-      "scripts": ["릴스 대본 1", "릴스 대본 2"]
-    },
-    "tiktok": {
-      "hooks": ["틱톡 후킹 1", "틱톡 후킹 2", "틱톡 후킹 3"],
-      "scripts": ["틱톡 대본 1", "틱톡 대본 2"]
-    },
-    "threads": {
-      "empathyPosts": ["공감글 1", "공감글 2"],
-      "questionPosts": ["질문글 1", "질문글 2"]
-    }
-  },
+"channelPackage": "유튜브 쇼츠\\n제목 3개\\n후킹 3개\\n쇼츠 대본 2개\\n\\n인스타 릴스\\n릴스 후킹 3개\\n캡션 3개\\n릴스 대본 2개\\n\\n틱톡\\n틱톡 후킹 3개\\n틱톡 대본 2개\\n\\n스레드\\n공감글 2개\\n질문글 2개",
   "accountScout": "벤치마킹할 계정 방향과 이유를 짧게 설명",
   "benchmarkReport": "조회수 패턴, 시청자 심리, 후킹 구조, 내 채널 적용법을 짧게 정리",
   "winningPatterns": ["패턴 1", "패턴 2", "패턴 3", "패턴 4", "패턴 5"],
