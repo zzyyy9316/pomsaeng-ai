@@ -28,6 +28,8 @@ type Result = {
   thumbnailCopy?: string[];
   commentHooks?: string[];
   nextVideoIdeas?: string[];
+  buyerPsychology?: string;
+channelPackage?: string;
   warning?: string;
 };
 
@@ -64,6 +66,8 @@ export default function Home() {
 
   const tabs = [
     ["report", "벤치마킹"],
+    ["psychology", "구매심리"],
+["channelPackage", "채널패키지"],
     ["status", "상태"],
     ["videos", "수집영상"],
     ["channels", "계정 Scout"],
@@ -108,6 +112,8 @@ ${s.script25 || ""}`;
 
   function text() {
     if (!result) return "키워드를 입력하고 분석 시작 버튼을 눌러주세요.";
+    if (tab === "psychology") return result.buyerPsychology || "구매심리 분석이 없습니다.";
+if (tab === "channelPackage") return result.channelPackage || "채널패키지가 없습니다.";
 
     if (tab === "status") return `시스템 상태
 ${result.systemStatus || "-"}
